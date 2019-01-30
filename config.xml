@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<widget xmlns:tizen="http://tizen.org/ns/widgets" xmlns="http://www.w3.org/ns/widgets" id="http://yourdomain/JeeS3Dom-V2" version="1.0.0" viewmodes="maximized">
+<widget xmlns:tizen="http://tizen.org/ns/widgets" xmlns="http://www.w3.org/ns/widgets" id="http://yourdomain/JeeS3DomV2" version="1.0.0" viewmodes="maximized">
     <access origin="*" subdomains="true"></access>
-    <tizen:application id="ooyBS7QDzZ.JeeS3Dom-V2" package="ooyBS7QDzZ" required_version="2.3.2"/>
+    <tizen:application id="ooyBS7QDzZ.JeeS3DomV2" package="ooyBS7QDzZ" required_version="2.3.2"/>
     <content src="index.html"/>
     <feature name="http://tizen.org/feature/screen.size.normal"/>
     <icon src="ico.ico"/>
-    <name>JeeS3Dom-V2</name>
+    <name>JeeS3Dom</name>
     <tizen:privilege name="http://tizen.org/privilege/internet"/>
     <tizen:privilege name="http://tizen.org/privilege/application.launch"/>
     <tizen:profile name="wearable"/>

@@ -75,7 +75,8 @@
 	document.addEventListener('pagecreate', function (event) {
 		var page = event.target;
 		console.log('-- pagecreate(' + page.id + ') --');
-
+		var list = page.querySelector('.ui-listview');
+		
 		if (page.id === 'lights') {
 			createLights(list);
 		} else

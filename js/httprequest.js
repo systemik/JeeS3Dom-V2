@@ -41,9 +41,9 @@ function initJeedomJsonValue() {
 
     var myKeyValue, myIPValue;
 
-    myKeyValue = localStorage.getItem("KEY");
-    myIPValue = localStorage.getItem("IP");
-    myHttps = "";
+    var myKeyValue = localStorage.getItem("KEY");
+    var myIPValue = localStorage.getItem("IP");
+    var myHttps = "";
     if (JSON.parse(localStorage.getItem("HTTPS"))) {
         myHttps = "s";
     }
@@ -210,6 +210,10 @@ function requestcommand(jeedomcmd) {
 
     myKeyValue = localStorage.getItem("KEY");
     myIPValue = localStorage.getItem("IP");
+    var myHttps = "";
+    if (JSON.parse(localStorage.getItem("HTTPS"))) {
+        myHttps = "s";
+    }
 
     var client = new XMLHttpRequest();
     client.open("GET", "http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + jeedomcmd);
@@ -234,8 +238,11 @@ function requestscenario(jeedomscenario) {
 
     myKeyValue = localStorage.getItem("KEY");
     myIPValue = localStorage.getItem("IP");
-    console.log("KEY Value: " + myKeyValue);
-    console.log("IP Value: " + myIPValue);
+    var myHttps = "";
+    if (JSON.parse(localStorage.getItem("HTTPS"))) {
+        myHttps = "s";
+    }
+
 
     var client = new XMLHttpRequest();
     client.open("GET", "http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=scenario&id=" + jeedomscenario + "&action=start");
@@ -261,8 +268,11 @@ function requesttemp(jeedomtemp) {
 
     myKeyValue = localStorage.getItem("KEY");
     myIPValue = localStorage.getItem("IP");
-    console.log("KEY Value: " + myKeyValue);
-    console.log("IP Value: " + myIPValue);
+    var myHttps = "";
+    if (JSON.parse(localStorage.getItem("HTTPS"))) {
+        myHttps = "s";
+    }
+
 
     var client = new XMLHttpRequest();
     client.open("GET", "http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + jeedomtemp);
