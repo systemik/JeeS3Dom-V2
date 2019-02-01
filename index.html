@@ -6,50 +6,66 @@
     <title>Jeedom</title>
     <script type="text/javascript" src="lib/jquery/jquery-3.2.1.min.js"></script>
     <link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.min.css">
-    <link rel="stylesheet" media="all and (-tizen-geometric-shape: circle)" href="lib/tau/wearable/theme/default/tau.circle.min.css">
+    <link rel="stylesheet" href="css/materialdesignicons.min.css" media="all" type="text/css"/>
+    <link rel="stylesheet" href="lib/tau/wearable/theme/default/tau.circle.min.css">
     <!-- load theme file for your application -->
-    <link rel="stylesheet" href="css/style-basic.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body onload="initJeedomValue(); return false;">
 
     <!-- Page principal -->
 
-    <div class="ui-page ui-page-active" id="main">
+    <div id="main" class="ui-page" data-enable-page-scroll="false">
+		<div id="selector" class="ui-selector">
+			<div class="ui-item lights-icon" data-title="Lights"></div>
+			<div class="ui-item lights-icon" data-title="LightsToggle"></div>
+			<div class="ui-item scenario-icon" data-title="Scenarios"></div>
+			<div class="ui-item temperature-icon" data-title="Temp"></div>
+			<div class="ui-item temperature-icon" data-title="TempHumi"></div>
+			<div class="ui-item key-icon" data-title="Settings"></div>
+		</div>
+	</div>
+    
+    <div class="ui-page" id="Lights">
         <header class="ui-header">
-            <h2 class="ui-title">Jeedom</h2>
-        </header>
-        <div class="ui-content content-padding">
-            <ul class="ui-listview" style="text-align:center">
-                <li> <a href="#scenarios"> Scenario</a></li>
-                <li> <a href="#lights"> Lumières</a></li>
-                <li> <a href="#temperatures"> Temperatures</a></li>
-                <li> <a href="#settingskey"> Settings</a></li>
-            </ul>
-        </div>
-    </div>
-
-    <div class="ui-page" id="lights">
-        <header class="ui-header">
-            <h2 class="ui-title" id="title"></h2>
+            <h2 class="ui-title" id="title">Lights</h2>
         </header>
         <div class="ui-content">
             <ul class="ui-listview"></ul>
         </div>
     </div>
 
-    <div class="ui-page" id="temperatures">
+    <div class="ui-page" id="LightsToggle">
         <header class="ui-header">
-            <h2 class="ui-title" id="title"></h2>
+            <h2 class="ui-title" id="title">Lights Toggle</h2>
+        </header>
+        <div class="ui-content">
+            <ul class="ui-listview li-has-toggle"></ul>
+        </div>
+    </div>
+
+    <div class="ui-page" id="Temp">
+        <header class="ui-header">
+            <h2 class="ui-title" id="title">Temp</h2>
         </header>
         <div class="ui-content">
             <ul class="ui-listview"></ul>
         </div>
     </div>
 
-    <div class="ui-page" id="scenarios">
+    <div class="ui-page" id="TempHumi">
         <header class="ui-header">
-            <h2 class="ui-title" id="title"></h2>
+            <h2 class="ui-title" id="title">TempHumi</h2>
+        </header>
+        <div class="ui-content">
+            <ul class="ui-listview"></ul>
+        </div>
+    </div>
+
+    <div class="ui-page" id="Scenarios">
+        <header class="ui-header">
+            <h2 class="ui-title" id="title">Scenarios</h2>
         </header>
         <div class="ui-content">
             <ul class="ui-listview"></ul>
@@ -58,15 +74,17 @@
 
     <!-- Page de configuration  -->
 
-    <div class="ui-page" id="settingskey">
+    <div class="ui-page" id="Settings">
         <header class="ui-header">
-            <h2 class="ui-title">Jeedom Key</h2>
+            <h2 class="ui-title">Settings</h2>
         </header>
 
         <div class="ui-content">
-            <p><label>Address Value: <input type="text" id="addressValue"></label></p>
-            <p><label>Key Value: <input type="text" id="keyValue"></label></p>
-            <p><label>HTTPS? <input type="checkbox" id="httpsValue"></label></p>
+            <p><label>Address Value:</label></p>
+            <input type="text" id="addressValue">
+            <p><label>Key Value:</label></p>
+            <input type="text" id="keyValue">
+            <p><label>HTTPS?  <input type="checkbox" id="httpsValue"></label></p>
             <p><input type="button" id="refreshButton" value="Refresh commands" onclick="initJeedomJsonValue(); return false;"></p>
             <p><input type="button" id="refreshButtonCommand" value="Refresh menus" onclick="commandSetup(); return false;"></p>
 
@@ -81,8 +99,8 @@
 
     <div id="popupToast" class="ui-popup ui-popup-toast toast-text-only">
         <div class="ui-popup-content">
-            Your setting<br>
-            has been saved
+            Your settings<br>
+            have been saved
         </div>
     </div>
 
@@ -91,11 +109,23 @@
         <div id="messageOut" class="ui-popup-content"> PopUp temperature</div>
     </div>
 
+
+	<div class="ui-page" id="processingPage">
+		<header class="ui-header">
+			<h2 class="ui-title">Processing</h2>
+		</header>
+		<div class="ui-content content-padding">
+			Loading values...
+		</div>
+		<div class="ui-processing ui-processing-full-size"></div>
+	</div>
+
     <!-- Fin des pages -->
 
     <script type="text/javascript" src="lib/tau/wearable/js/tau.min.js"></script>
     <script type="text/javascript" src="js/circle-helper.js"></script>
     <script type="text/javascript" src="js/httprequest.js"></script>
+    <script type="text/javascript" src="index.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
     <script type="text/javascript" src="js/lowBatteryCheck.js"></script>
 </body>

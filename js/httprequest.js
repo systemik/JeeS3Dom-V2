@@ -32,6 +32,9 @@ function saveJeedomValue() {
     localStorage.setItem("IP", addressValue);
     localStorage.setItem("KEY", keyValue);
     localStorage.setItem("HTTPS", httpsValue);
+    
+    console.log("saveJeedomValue executed");
+
 }
 
 // Load Box JSON value on start
@@ -50,6 +53,24 @@ function initJeedomJsonValue() {
     console.log("KEY Value: " + myKeyValue);
     console.log("IP Value: " + myIPValue);
     console.log("HTTPS: " + myHttps);
+
+    localStorage.setItem("JSONCommands", "");
+    localStorage.setItem("JSONObjects", "");
+    localStorage.setItem("JSONScenario", "");
+    localStorage.setItem("JSONfull", "");
+    localStorage.setItem("lightCmd", "");
+    localStorage.setItem("lightCmdFull", "");
+    localStorage.setItem("lightCmdFullIds", "");
+    localStorage.setItem("lightCmdIds", "");
+    localStorage.setItem("scenarios", "");
+    localStorage.setItem("tempCmd", "");
+    localStorage.setItem("tempCmdFull", "");
+    localStorage.setItem("tempCmdFullIds", "");
+    localStorage.setItem("tempCmdIds", "");
+
+
+
+
 
     var xhttp1; // JSON-Objects
     var xhttp2; // JSON-Commands
@@ -137,6 +158,7 @@ function initJeedomJsonValue() {
         };
     };
     console.log("initJeedomJsonValue executed");
+    navigator.vibrate([100, 100, 100]);
 };
 
 
@@ -146,9 +168,18 @@ function commandSetup() {
     fullData = JSON.parse(localStorage.getItem("JSONfull"));
     fullScenario = JSON.parse(localStorage.getItem("JSONScenario"));
     var lightCmd = [];
+    var lightCmdFull = []; 
     var tempCmd = [];
+    var tempCmdFull = [];
     var scenarios = [];
+    var lightCmdIds = [];
+    var lightCmdFullIds = [];
+    var tempCmdIds = [];
+    var tempCmdFullIds = [];
     var eqCategory;
+    var lightonid,lightoffid,lightstateid;
+    var temptempid,temphumid,temptempstateid,temphumstateid;
+
 
     // LIGHTS
     $.each(fullData.result, function (key, valueeq) {
@@ -159,13 +190,46 @@ function commandSetup() {
                         object: valueeq.name,
                         equipment: valueeqlogics.name,
                         generic_type: valueeqlogicscmds.generic_type,
-                        id: valueeqlogicscmds.id
+                        id: valueeqlogicscmds.id,
+                        state: ""
                     });
+                    lightCmdIds.push(valueeqlogicscmds.id);
                 }
             });
         });
     });
     localStorage.setItem("lightCmd", JSON.stringify(lightCmd));
+    localStorage.setItem("lightCmdIds", JSON.stringify(lightCmdIds));
+
+    //LIGHTS FULL
+    $.each(fullData.result, function (key, valueeq) {
+        $.each(valueeq.eqLogics, function (key, valueeqlogics) {
+            $.each(valueeqlogics.cmds, function (key, valueeqlogicscmds) {
+                if (valueeqlogicscmds.generic_type === "LIGHT_ON" || valueeqlogicscmds.generic_type === "LIGHT_OFF" || valueeqlogicscmds.generic_type === "LIGHT_STATE"){
+                    if (valueeqlogicscmds.generic_type === "LIGHT_ON"){lightonid=valueeqlogicscmds.id;}
+                    else if (valueeqlogicscmds.generic_type === "LIGHT_OFF"){lightoffid=valueeqlogicscmds.id;}
+                    else if (valueeqlogicscmds.generic_type === "LIGHT_STATE"){
+                        lightstateid=valueeqlogicscmds.id;
+                        lightCmdFull.push({
+                            object: valueeq.name,
+                            objectid: valueeq.id,
+                            equipment: valueeqlogics.name,
+                            equipmentid: valueeqlogics.id,
+                            lighton:lightonid,
+                            lightoff:lightoffid,
+                            lightstate:lightstateid,
+                            state:valueeqlogicscmds.state
+                        });
+                        lightCmdFullIds.push(valueeqlogicscmds.id);
+                    }
+                    else {}
+            }
+            });
+        });
+    });
+    localStorage.setItem("lightCmdFull", JSON.stringify(lightCmdFull));
+    localStorage.setItem("lightCmdFullIds", JSON.stringify(lightCmdFullIds));
+    
     // console.log(lightCmd);
 
     //TEMPERATURE
@@ -177,14 +241,51 @@ function commandSetup() {
                         object: valueeq.name,
                         equipment: valueeqlogics.name,
                         generic_type: valueeqlogicscmds.generic_type,
-                        id: valueeqlogicscmds.id
+                        id: valueeqlogicscmds.id,
+                        state: ""
                     });
+                    tempCmdIds.push(valueeqlogicscmds.id);
                 }
             });
         });
     });
     localStorage.setItem("tempCmd", JSON.stringify(tempCmd));
+    localStorage.setItem("tempCmdIds", JSON.stringify(tempCmdIds));
+
     // console.log(tempCmd);
+
+    //TEMPERATURE FULL
+    $.each(fullData.result, function (key, valueeq) {
+        $.each(valueeq.eqLogics, function (key, valueeqlogics) {
+            $.each(valueeqlogics.cmds, function (key, valueeqlogicscmds) {
+                if (valueeqlogicscmds.generic_type === "TEMPERATURE"|| valueeqlogicscmds.generic_type === "HUMIDITY") {
+                    if (valueeqlogicscmds.generic_type === "TEMPERATURE"){
+                        temptempid=valueeqlogicscmds.id;
+                        temptempstateid=valueeqlogicscmds.state;
+                    }
+                    else if (valueeqlogicscmds.generic_type === "HUMIDITY"){
+                        temphumid=valueeqlogicscmds.id;
+                        temphumstateid=valueeqlogicscmds.state;
+                    }
+                    tempCmdFull.push({
+                        object: valueeq.name,
+                        equipment: valueeqlogics.name,
+                        generic_type: valueeqlogicscmds.generic_type,
+                        tempid: temptempid,
+                        humid: temphumid,
+                        statetemp: temptempstateid,
+                        statehum: temphumstateid
+                    });
+                    tempCmdFullIds.push(valueeqlogicscmds.id);
+                }
+            });
+        });
+    });
+    localStorage.setItem("tempCmdFull", JSON.stringify(tempCmdFull));
+    localStorage.setItem("tempCmdFullIds", JSON.stringify(tempCmdFullIds));
+
+    // console.log(tempCmd);
+
 
     //SCENARIO
     $.each(fullScenario.result, function (key, valuescenario) {
@@ -196,6 +297,8 @@ function commandSetup() {
     localStorage.setItem("scenarios", JSON.stringify(scenarios));
     // console.log(scenarios);
 
+    console.log("commandSetup executed");
+
 };
 
 
@@ -206,11 +309,11 @@ function commandSetup() {
 
 function requestcommand(jeedomcmd) {
 
-    var myKeyValue, myIPValue;
+    var myKeyValue, myIPValue, myHttps;
 
     myKeyValue = localStorage.getItem("KEY");
     myIPValue = localStorage.getItem("IP");
-    var myHttps = "";
+    myHttps = "";
     if (JSON.parse(localStorage.getItem("HTTPS"))) {
         myHttps = "s";
     }
@@ -234,11 +337,11 @@ function requestcommand(jeedomcmd) {
 
 function requestscenario(jeedomscenario) {
 
-    var myKeyValue, myIPValue;
+    var myKeyValue, myIPValue, myHttps;
 
     myKeyValue = localStorage.getItem("KEY");
     myIPValue = localStorage.getItem("IP");
-    var myHttps = "";
+    myHttps = "";
     if (JSON.parse(localStorage.getItem("HTTPS"))) {
         myHttps = "s";
     }
@@ -258,17 +361,65 @@ function requestscenario(jeedomscenario) {
     client.send();
 };
 
+function requestcommandlisttemp(jeedomcmd) {
+
+    var myKeyValue, myIPValue, myHttps;
+
+    myKeyValue = localStorage.getItem("KEY");
+    myIPValue = localStorage.getItem("IP");
+    myHttps = "";
+    if (JSON.parse(localStorage.getItem("HTTPS"))) {
+        myHttps = "s";
+    }
+
+    var client = new XMLHttpRequest();
+    client.open("GET", "http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + jeedomcmd);
+    console.log("http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + jeedomcmd);
+    client.onreadystatechange = function () {
+        if (client.readyState == 4) {
+            if (client.status == 200) {
+                // console.log(client.responseText);
+                navigator.vibrate([500, 500, 500]);
+                var responseTemp = JSON.parse(client.responseText);
+                var eqTemp = JSON.parse(localStorage.getItem("tempCmd"));
+                // console.log(responseTemp);
+                // console.log(eqTemp);
+
+                for (const key of Object.keys(responseTemp)) {
+                    // console.log(key, responseTemp[key]);
+                    $.each(eqTemp, function (key2, valueeqtemp) {
+                        // console.log(valueeqtemp.id);
+                        // console.log(key);
+
+                        if (key === valueeqtemp.id) {
+                            valueeqtemp.state = responseTemp[key];
+                            localStorage.setItem("tempCmd",JSON.stringify(eqTemp));
+                        };
+                        for (const key2 of Object.keys(valueeqtemp)) {
+                            if (key === key2){
+                        }
+                    }                
+                    });
+                }
+            }
+        }
+    };
+    client.send();
+};
+
+
+requestcommandlisttemp(localStorage.getItem("tempCmdIds"));
 
 // Requette HTTP pour la requete temperature
 // Les commandes sont en HTTP. On peut mettre HTTPS si besoin.
 
 function requesttemp(jeedomtemp) {
 
-    var myKeyValue, myIPValue;
+    var myKeyValue, myIPValue, myHttps;
 
     myKeyValue = localStorage.getItem("KEY");
     myIPValue = localStorage.getItem("IP");
-    var myHttps = "";
+    myHttps = "";
     if (JSON.parse(localStorage.getItem("HTTPS"))) {
         myHttps = "s";
     }

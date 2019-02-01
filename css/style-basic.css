@@ -21,3 +21,11 @@ body {
 	font-size:5em;
 	color:#fff;
 }
+
+/* .ui-page.ui-page-active {
+    display: flex;
+    display: -webkit-flex;
+    flex-direction: column;
+    -webkit-flex-direction: column;
+    text-align: center;
+} */
