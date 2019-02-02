@@ -1,6 +1,7 @@
 (function(tau) {
 	var page = document.getElementById("main"),
 		selector = document.getElementById("selector"),
+		selectortext = document.getElementsByClassName("ui-selector-indicator-text"),
 		selectorComponent,
 		clickBound;
 
@@ -20,13 +21,8 @@
 
 		if (target.classList.contains("ui-selector-indicator")) {
             console.log("Indicator clicked");
-
-            console.log(target);
-            // console.log(target.("ui-selector-indicator-text"));
-            var target = event.target;
-            console.log(target);
-
-            console.log(target.getAttribute("data-title"));
+			console.log(selectortext[0].textContent);
+			tau.changePage(selectortext[0].textContent);
 			return;
 		}
 	}

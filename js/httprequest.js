@@ -289,10 +289,12 @@ function commandSetup() {
 
     //SCENARIO
     $.each(fullScenario.result, function (key, valuescenario) {
-        scenarios.push({
-            name: valuescenario.name,
-            id: valuescenario.id
-        });
+        if (valuescenario.isActive === "1"){
+            scenarios.push({
+                name: valuescenario.name,
+                id: valuescenario.id
+            });
+        };  
     });
     localStorage.setItem("scenarios", JSON.stringify(scenarios));
     // console.log(scenarios);
