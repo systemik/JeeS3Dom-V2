@@ -257,6 +257,8 @@ function commandSetup() {
     //TEMPERATURE FULL
     $.each(fullData.result, function (key, valueeq) {
         $.each(valueeq.eqLogics, function (key, valueeqlogics) {
+            temptempid="";
+            temphumid="";
             $.each(valueeqlogics.cmds, function (key, valueeqlogicscmds) {
                 if (valueeqlogicscmds.generic_type === "TEMPERATURE"|| valueeqlogicscmds.generic_type === "HUMIDITY") {
                     if (valueeqlogicscmds.generic_type === "TEMPERATURE"){
@@ -267,18 +269,21 @@ function commandSetup() {
                         temphumid=valueeqlogicscmds.id;
                         temphumstateid=valueeqlogicscmds.state;
                     }
-                    tempCmdFull.push({
-                        object: valueeq.name,
-                        equipment: valueeqlogics.name,
-                        generic_type: valueeqlogicscmds.generic_type,
-                        tempid: temptempid,
-                        humid: temphumid,
-                        statetemp: temptempstateid,
-                        statehum: temphumstateid
-                    });
-                    tempCmdFullIds.push(valueeqlogicscmds.id);
                 }
             });
+            if (temptempid !== ""){
+                tempCmdFull.push({
+                    object: valueeq.name,
+                    equipment: valueeqlogics.name,
+                    // generic_type: valueeqlogicscmds.generic_type,
+                    tempid: temptempid,
+                    humid: temphumid,
+                    statetemp: temptempstateid,
+                    statehum: temphumstateid
+                });
+                // tempCmdFullIds.push(valueeqlogicscmds.id);
+            }
+
         });
     });
     localStorage.setItem("tempCmdFull", JSON.stringify(tempCmdFull));
@@ -380,7 +385,7 @@ function requestcommandlisttemp(jeedomcmd) {
     client.onreadystatechange = function () {
         if (client.readyState == 4) {
             if (client.status == 200) {
-                // console.log(client.responseText);
+                console.log(client.responseText);
                 navigator.vibrate([500, 500, 500]);
                 var responseTemp = JSON.parse(client.responseText);
                 var eqTemp = JSON.parse(localStorage.getItem("tempCmd"));
