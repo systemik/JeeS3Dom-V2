@@ -40,35 +40,26 @@
 			console.log('process LightCmdFull #' + i);
 
 			var span = document.createElement('span');
-			span.className = 'ui-li-sub-text li-text-sub';
-			span.innerHTML = lightCmdFull[i].state;
+			// span.className = 'ui-li-sub-text li-text-sub';
+			span.className = 'li-text-sub';
+			// span.innerHTML = lightCmdFull[i].state;
 
 			var li = document.createElement('li');
-			var cmdToLaunch = lightCmdFull[i].id;
-			li.addEventListener('click', requestcommand.bind(this, cmdToLaunch), false);
-			li.innerText = lightCmdFull[i].equipment;
+			li.className = 'li-has-toggle';
 
+			if (lightCmdFull[i].state >= 1) {var html = '<label class="ui-custom-toggleswitch-label">' + lightCmdFull[i].equipment + '<div class="ui-toggleswitch ui-custom-toggleswitch"><input id="mobile-data-switch-input" type="checkbox" class="ui-switch-input" checked/><div class="ui-switch-button"></div></div></label>';}
+			else{var html = '<label class="ui-custom-toggleswitch-label">' + lightCmdFull[i].equipment + '<div class="ui-toggleswitch ui-custom-toggleswitch"><input id="mobile-data-switch-input" type="checkbox" class="ui-switch-input"/><div class="ui-switch-button"></div></div></label>';}
+			var wrapper= document.createElement('div');
+			wrapper.innerHTML = html;
+
+			var cmdToLaunch = lightCmdFull[i].objectid;
+			var cmdToLaunch2 = lightCmdFull[i].logicalid;
+			li.addEventListener('click', requestcommandtoggle.bind(this, cmdToLaunch, cmdToLaunch2), false);
+
+			li.appendChild(wrapper);
 
 			li.appendChild(span);
 			list.appendChild(li);
-
-
-
-			// <ul class="ui-listview">
-
-			// <li class="li-has-multiline li-has-toggle" ng-repeat="device in Vera">
-
-			// 	<label>{{device.Name}}
-
-			// 	<span class="li-text-sub ui-li-sub-text">{{device.Metadatas.Room}}</span>
-
-			// 	<div class="ui-toggleswitch">
-			// 		<input type="checkbox" class="ui-switch-input" ng-click="SwitchVeraDevice(device)" ng-checked="device.Value.Status">
-			// 		<div class="ui-switch-button"></div> 
-			// 	</div>
-			// 	</label>
-			// </li>
-			// </ul>
 
         }
 	}
@@ -113,7 +104,7 @@
 
 			var span = document.createElement('span');
 			span.className = 'ui-li-sub-text li-text-sub';
-			if (tempCmdFull[i].statehum === undefined){
+			if (tempCmdFull[i].statehum === ""){
 			span.innerHTML = tempCmdFull[i].statetemp + " °"}
 			else{
 			span.innerHTML = tempCmdFull[i].statetemp + " °/ " + tempCmdFull[i].statehum + " %";}
@@ -141,6 +132,7 @@
 		} else
 
 		if (page.id === 'LightsToggle') {
+			requestcommandlistlight(localStorage.getItem("lightCmdFullIds"));
 			createLightsToggle(list);
 		} else
 

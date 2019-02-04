@@ -9,7 +9,7 @@ function initJeedomValue() {
     if (!localStorage.getItem("KEY")) {
         localStorage.setItem("KEY", "Jeedom_API_Key");
     };
-    if (!localStorage.getItem("KEY")) {
+    if (!localStorage.getItem("HTTPS")) {
         localStorage.setItem("HTTPS", false);
     };
 
@@ -213,6 +213,7 @@ function commandSetup() {
                         lightCmdFull.push({
                             object: valueeq.name,
                             objectid: valueeq.id,
+                            logicalid: valueeqlogicscmds.logicalId,
                             equipment: valueeqlogics.name,
                             equipmentid: valueeqlogics.id,
                             lighton:lightonid,
@@ -257,7 +258,9 @@ function commandSetup() {
     //TEMPERATURE FULL
     $.each(fullData.result, function (key, valueeq) {
         $.each(valueeq.eqLogics, function (key, valueeqlogics) {
+            temptempstateid="";
             temptempid="";
+            temphumstateid="";
             temphumid="";
             $.each(valueeqlogics.cmds, function (key, valueeqlogicscmds) {
                 if (valueeqlogicscmds.generic_type === "TEMPERATURE"|| valueeqlogicscmds.generic_type === "HUMIDITY") {
@@ -339,6 +342,51 @@ function requestcommand(jeedomcmd) {
     client.send();
 };
 
+function requestcommandtoggle(jeedomeq,jeedomeqlogical) {
+
+    var myKeyValue, myIPValue, myHttps;
+
+    myKeyValue = localStorage.getItem("KEY");
+    myIPValue = localStorage.getItem("IP");
+    myHttps = "";
+    if (JSON.parse(localStorage.getItem("HTTPS"))) {
+        myHttps = "s";
+    }
+
+    var client = new XMLHttpRequest();
+    var equipment = JSON.parse(localStorage.getItem("lightCmdFull"));
+    var commandtoexecute;
+    $.each(equipment, function (key, valueeq) {
+
+
+        if (jeedomeq === valueeq.objectid) {
+            if (jeedomeqlogical === valueeq.logicalid) {               
+                if (valueeq.lightstate >= 1){
+                    commandtoexecute = valueeq.lightoff;
+                }
+                else{
+                    commandtoexecute = valueeq.lighton;
+                }
+
+            }
+        };
+              
+    });
+    
+    client.open("GET", "http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + commandtoexecute);
+    console.log("http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + commandtoexecute);
+    client.onreadystatechange = function () {
+        if (client.readyState == 4) {
+            if (client.status == 200) {
+                console.log(client.responseText);
+                navigator.vibrate([500, 500, 500]);
+            }
+        }
+    };
+    client.send();
+    requestcommandlistlight(localStorage.getItem("lightCmdFullIds"));
+};
+
 // Requette HTTP pour les Scenario
 // Les commandes sont en HTTP. On peut mettre HTTPS si besoin.
 
@@ -389,23 +437,14 @@ function requestcommandlisttemp(jeedomcmd) {
                 navigator.vibrate([500, 500, 500]);
                 var responseTemp = JSON.parse(client.responseText);
                 var eqTemp = JSON.parse(localStorage.getItem("tempCmd"));
-                // console.log(responseTemp);
-                // console.log(eqTemp);
 
                 for (const key of Object.keys(responseTemp)) {
-                    // console.log(key, responseTemp[key]);
                     $.each(eqTemp, function (key2, valueeqtemp) {
-                        // console.log(valueeqtemp.id);
-                        // console.log(key);
-
                         if (key === valueeqtemp.id) {
                             valueeqtemp.state = responseTemp[key];
                             localStorage.setItem("tempCmd",JSON.stringify(eqTemp));
                         };
-                        for (const key2 of Object.keys(valueeqtemp)) {
-                            if (key === key2){
-                        }
-                    }                
+              
                     });
                 }
             }
@@ -419,6 +458,51 @@ requestcommandlisttemp(localStorage.getItem("tempCmdIds"));
 
 // Requette HTTP pour la requete temperature
 // Les commandes sont en HTTP. On peut mettre HTTPS si besoin.
+
+function requestcommandlistlight(jeedomcmd) {
+
+    var myKeyValue, myIPValue, myHttps;
+
+    myKeyValue = localStorage.getItem("KEY");
+    myIPValue = localStorage.getItem("IP");
+    myHttps = "";
+    if (JSON.parse(localStorage.getItem("HTTPS"))) {
+        myHttps = "s";
+    }
+
+    var client = new XMLHttpRequest();
+    client.open("GET", "http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + jeedomcmd);
+    console.log("http" + myHttps + "://" + myIPValue + "/core/api/jeeApi.php?apikey=" + myKeyValue + "&type=cmd&id=" + jeedomcmd);
+    client.onreadystatechange = function () {
+        if (client.readyState == 4) {
+            if (client.status == 200) {
+                console.log(client.responseText);
+                navigator.vibrate([500, 500, 500]);
+                var responseTemp = JSON.parse(client.responseText);
+                var eqlight = JSON.parse(localStorage.getItem("lightCmdFull"));
+                console.log(responseTemp);
+                console.log(eqlight);
+
+                for (const key of Object.keys(responseTemp)) {
+                    $.each(eqlight, function (key2, valueeqlight) {
+
+
+                        if (key === valueeqlight.lightstate) {
+
+                            valueeqlight.state = responseTemp[key];
+                            localStorage.setItem("lightCmdFull",JSON.stringify(eqlight));
+                        };
+     
+                    });
+                }
+            }
+        }
+    };
+    client.send();
+};
+
+requestcommandlistlight(localStorage.getItem("lightCmdFullIds"));
+
 
 function requesttemp(jeedomtemp) {
 
